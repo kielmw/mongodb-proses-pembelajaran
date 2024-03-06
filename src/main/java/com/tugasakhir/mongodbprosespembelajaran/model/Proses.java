@@ -23,11 +23,31 @@ public class Proses {
     private String namaKelas;
     @Field(name = "videoKelas ")
     private String videoKelas;
+    private String fileName;
+    private byte[] pdfBytes;
 
-    public Proses(String idKelas, String namaKelas, String videoKelas) {
+    public Proses(String idKelas, String namaKelas, String videoKelas, String fileName, byte[] pdfBytes) {
         this.idKelas = idKelas;
         this.namaKelas = namaKelas;
         this.videoKelas = videoKelas;
+        this.fileName = fileName;
+        this.pdfBytes = pdfBytes;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public void setPdfBytes(byte[] pdfBytes) {
+        this.pdfBytes = pdfBytes;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public byte[] getPdfBytes() {
+        return pdfBytes;
     }
 
     public String getIdKelas() {return idKelas;}
