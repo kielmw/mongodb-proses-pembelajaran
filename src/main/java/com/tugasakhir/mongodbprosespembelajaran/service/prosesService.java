@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -52,5 +53,8 @@ public class prosesService {
         } catch (IOException e) {
             throw new IOException("Failed to save PDF: " + e.getMessage());
         }
+    }
+    public Optional<Proses> getPdfById(String idKelas) {
+        return ProsesRepository.findByIdKelas(idKelas);
     }
 }

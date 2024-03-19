@@ -13,6 +13,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.server.ResponseStatusException;
+import java.util.Optional;
 
 
 import java.util.List;
@@ -37,6 +47,7 @@ public class prosesController {
     }
     @GetMapping
     public ResponseEntity<List<Proses>> getAllProses(){
+
         return ResponseEntity.ok(ProsesService.getAllProses());
     }
     @GetMapping("/{idKelas}")
@@ -48,7 +59,7 @@ public class prosesController {
         ProsesService.deleteProses(idKelas);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
-    @PostMapping("/upload/{idKelas}")
+    @PostMapping("/{idKelas}/uploadpdf")
     public ResponseEntity<String> savePdf(@PathVariable String idKelas ,@RequestParam("file") MultipartFile file , Proses proses) {
         if (file.isEmpty()) {
             return ResponseEntity.badRequest().body("Please upload a PDF file.");
@@ -58,6 +69,18 @@ public class prosesController {
             return ResponseEntity.ok().body(result);
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload PDF: " + e.getMessage());
+        }
+    }
+    @GetMapping("/{idKelas}/downloadpdf")
+    public ResponseEntity<byte[]> downloadPdf(@PathVariable String idKelas) {
+        Optional<Proses> pdfOptional = ProsesService.getPdfById(idKelas);
+        if (pdfOptional.isPresent()) {
+            Proses pdf = pdfOptional.get();
+            return ResponseEntity.ok()
+                    .header("Content-Disposition", "attachment; filename=\"" + pdf.getFileName() + ".pdf\"")
+                    .body(pdf.getPdfBytes());
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "PDF not found");
         }
     }
 }
