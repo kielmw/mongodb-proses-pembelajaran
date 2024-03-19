@@ -9,6 +9,10 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import java.util.List;
+
 
 @Getter
 @Setter
@@ -23,31 +27,13 @@ public class Proses {
     private String namaKelas;
     @Field(name = "videoKelas ")
     private String videoKelas;
-    private String fileName;
-    private byte[] pdfBytes;
+    private List<Pdf> pdfs;
 
-    public Proses(String idKelas, String namaKelas, String videoKelas, String fileName, byte[] pdfBytes) {
+    public Proses(String idKelas, String namaKelas, String videoKelas, List<Pdf> pdfs) {
         this.idKelas = idKelas;
         this.namaKelas = namaKelas;
         this.videoKelas = videoKelas;
-        this.fileName = fileName;
-        this.pdfBytes = pdfBytes;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
-    public void setPdfBytes(byte[] pdfBytes) {
-        this.pdfBytes = pdfBytes;
-    }
-
-    public String getFileName() {
-        return fileName;
-    }
-
-    public byte[] getPdfBytes() {
-        return pdfBytes;
+        this.pdfs = pdfs;
     }
 
     public String getIdKelas() {return idKelas;}
@@ -72,5 +58,11 @@ public class Proses {
         this.videoKelas = videoKelas;
     }
 
+    public List<Pdf> getPdfs() {
+        return pdfs;
+    }
 
+    public void setPdfs(List<Pdf> pdfs) {
+        this.pdfs = pdfs;
+    }
 }

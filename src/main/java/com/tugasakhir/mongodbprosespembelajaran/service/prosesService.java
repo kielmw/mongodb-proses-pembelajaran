@@ -37,23 +37,23 @@ public class prosesService {
     public void deleteProses (String idKelas){
         ProsesRepository.deleteById(idKelas);
     }
-    public String savePdf(MultipartFile file, String idKelas , Proses proses) throws IOException {
-        String fileName = Objects.requireNonNull(file.getOriginalFilename());
-        try {
-            // Convert MultipartFile to bytes
-            byte[] pdfBytes = file.getBytes();
-
-            // Save PDF bytes to MongoDB with specified class ID
-            proses.setFileName(fileName);
-            proses.setIdKelas(idKelas);
-            proses.setPdfBytes(pdfBytes);
-            ProsesRepository.save(proses);
-
-            return "PDF saved successfully for class ID: " + idKelas;
-        } catch (IOException e) {
-            throw new IOException("Failed to save PDF: " + e.getMessage());
-        }
-    }
+//    public String savePdf(MultipartFile file, String idKelas , Proses proses) throws IOException {
+//        String fileName = Objects.requireNonNull(file.getOriginalFilename());
+//        try {
+//            // Convert MultipartFile to bytes
+//            byte[] pdfBytes = file.getBytes();
+//
+//            // Save PDF bytes to MongoDB with specified class ID
+//            proses.setFileName(fileName);
+//            proses.setIdKelas(idKelas);
+//            proses.setPdfBytes(pdfBytes);
+//            ProsesRepository.save(proses);
+//
+//            return "PDF saved successfully for class ID: " + idKelas;
+//        } catch (IOException e) {
+//            throw new IOException("Failed to save PDF: " + e.getMessage());
+//        }
+//    }
     public Optional<Proses> getPdfById(String idKelas) {
         return ProsesRepository.findByIdKelas(idKelas);
     }

@@ -59,28 +59,28 @@ public class prosesController {
         ProsesService.deleteProses(idKelas);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
-    @PostMapping("/{idKelas}/uploadpdf")
-    public ResponseEntity<String> savePdf(@PathVariable String idKelas ,@RequestParam("file") MultipartFile file , Proses proses) {
-        if (file.isEmpty()) {
-            return ResponseEntity.badRequest().body("Please upload a PDF file.");
-        }
-        try {
-            String result = ProsesService.savePdf(file,idKelas,proses);
-            return ResponseEntity.ok().body(result);
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload PDF: " + e.getMessage());
-        }
-    }
-    @GetMapping("/{idKelas}/downloadpdf")
-    public ResponseEntity<byte[]> downloadPdf(@PathVariable String idKelas) {
-        Optional<Proses> pdfOptional = ProsesService.getPdfById(idKelas);
-        if (pdfOptional.isPresent()) {
-            Proses pdf = pdfOptional.get();
-            return ResponseEntity.ok()
-                    .header("Content-Disposition", "attachment; filename=\"" + pdf.getFileName() + ".pdf\"")
-                    .body(pdf.getPdfBytes());
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "PDF not found");
-        }
-    }
+//    @PostMapping("/{idKelas}/uploadpdf")
+//    public ResponseEntity<String> savePdf(@PathVariable String idKelas ,@RequestParam("file") MultipartFile file , Proses proses) {
+//        if (file.isEmpty()) {
+//            return ResponseEntity.badRequest().body("Please upload a PDF file.");
+//        }
+//        try {
+//            String result = ProsesService.savePdf(file,idKelas,proses);
+//            return ResponseEntity.ok().body(result);
+//        } catch (IOException e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload PDF: " + e.getMessage());
+//        }
+//    }
+//    @GetMapping("/{idKelas}/downloadpdf")
+//    public ResponseEntity<byte[]> downloadPdf(@PathVariable String idKelas) {
+//        Optional<Proses> pdfOptional = ProsesService.getPdfById(idKelas);
+//        if (pdfOptional.isPresent()) {
+//            Proses pdf = pdfOptional.get();
+//            return ResponseEntity.ok()
+//                    .header("Content-Disposition", "attachment; filename=\"" + pdf.getFileName() + ".pdf\"")
+//                    .body(pdf.getPdfBytes());
+//        } else {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "PDF not found");
+//        }
+//    }
 }
