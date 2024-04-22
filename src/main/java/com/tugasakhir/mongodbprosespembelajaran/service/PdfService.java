@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.tugasakhir.mongodbprosespembelajaran.model.Proses;
 import com.tugasakhir.mongodbprosespembelajaran.model.Pdf;
 import com.tugasakhir.mongodbprosespembelajaran.repository.prosesRepository;
+import com.tugasakhir.mongodbprosespembelajaran.service.prosesService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -151,4 +152,24 @@ public class PdfService {
             throw new IllegalArgumentException("Failed to delete PDF: " + e.getMessage());
         }
     }
+    public void deleteAllPdfByProsesId(String idKelas) {
+        try {
+            // Retrieve the Proses entity by ID
+            Proses proses = prosesRepository.findByIdKelas(idKelas)
+                    .orElseThrow(() -> new IllegalArgumentException("Proses with ID " + idKelas + " not found"));
+
+            // Retrieve the list of PDFs from the Proses entity
+            List<Pdf> pdfs = proses.getPdfs();
+            if (pdfs != null && !pdfs.isEmpty()) {
+                // Iterate through the list of PDFs to delete each one
+                for (Pdf pdf : pdfs) {
+                    // Call the deletePdfById method to delete each PDF
+                    deletePdfById(idKelas, pdf.getIdPdf());
+                }
+            }
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Failed to delete PDFs associated with Proses ID " + idKelas + ": " + e.getMessage());
+        }
+    }
+
 }

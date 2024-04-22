@@ -15,9 +15,12 @@ import java.util.Optional;
 public class prosesService {
 
     private final prosesRepository ProsesRepository;
+    private final PdfService pdfService;
+
     public void addProses(Proses proses){
         ProsesRepository.insert(proses);
     }
+
     public void updateProses(Proses proses){
         Proses savedProses = ProsesRepository.findById(proses.getIdKelas())
                 .orElseThrow(() -> new RuntimeException(
@@ -27,34 +30,29 @@ public class prosesService {
 
         ProsesRepository.save(proses);
     }
+
     public Proses getProses(String idKelas) {
         return ProsesRepository.findByIdKelas(idKelas)
                 .orElseThrow(() -> new RuntimeException(String.format("Cannot Find Expense by ID - %s", idKelas)));
     }
+
     public List<Proses> getAllProses(){
         return ProsesRepository.findAll();
     }
-    public void deleteProses (String idKelas){
-        ProsesRepository.deleteById(idKelas);
-    }
-//    public String savePdf(MultipartFile file, String idKelas , Proses proses) throws IOException {
-//        String fileName = Objects.requireNonNull(file.getOriginalFilename());
-//        try {
-//            // Convert MultipartFile to bytes
-//            byte[] pdfBytes = file.getBytes();
-//
-//            // Save PDF bytes to MongoDB with specified class ID
-//            proses.setFileName(fileName);
-//            proses.setIdKelas(idKelas);
-//            proses.setPdfBytes(pdfBytes);
-//            ProsesRepository.save(proses);
-//
-//            return "PDF saved successfully for class ID: " + idKelas;
-//        } catch (IOException e) {
-//            throw new IOException("Failed to save PDF: " + e.getMessage());
-//        }
-//    }
-    public Optional<Proses> getPdfById(String idKelas) {
-        return ProsesRepository.findByIdKelas(idKelas);
+
+    public void deleteProses(String idKelas) {
+        try {
+            // Retrieve the Proses entity by ID
+            Proses proses = ProsesRepository.findByIdKelas(idKelas)
+                    .orElseThrow(() -> new RuntimeException("Proses with ID " + idKelas + " not found"));
+
+            // Delete any associated PDFs first using an instance of PdfService
+            pdfService.deleteAllPdfByProsesId(idKelas);
+
+            // After deleting associated PDFs, delete the Proses entity
+            ProsesRepository.deleteById(idKelas);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to delete Proses: " + e.getMessage());
+        }
     }
 }
