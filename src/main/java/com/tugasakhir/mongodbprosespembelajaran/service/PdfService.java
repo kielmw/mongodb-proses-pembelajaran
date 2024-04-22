@@ -85,7 +85,7 @@ public class PdfService {
             // Retrieve the list of PDFs from the Proses entity
             List<Pdf> pdfs = proses.getPdfs();
             if (pdfs != null) {
-                // Iterate through the list of PDFs to find the PDF by ID
+                 // Iterate through the list of PDFs to find the PDF by ID
                 for (Pdf pdf : pdfs) {
                     if (pdf.getIdPdf().equals(pdfId)) {
                         // Return the PDF content as byte array
@@ -118,5 +118,37 @@ public class PdfService {
 
         // If PDF not found, throw exception or return default filename
         throw new IllegalArgumentException("PDF with ID " + pdfId + " not found");
+    }
+    public void deletePdfById(String idKelas, String pdfId) {
+        try {
+            // Retrieve the Proses entity by ID
+            Proses proses = prosesRepository.findByIdKelas(idKelas)
+                    .orElseThrow(() -> new IllegalArgumentException("Proses with ID " + idKelas + " not found"));
+
+            // Retrieve the list of PDFs from the Proses entity
+            List<Pdf> pdfs = proses.getPdfs();
+            if (pdfs != null && !pdfs.isEmpty()) {
+                // Iterate through the list of PDFs to find the PDF by ID
+                for (Pdf pdf : pdfs) {
+                    if (pdf.getIdPdf().equals(pdfId)) {
+                        // Remove the PDF from the list
+                        pdfs.remove(pdf);
+
+                        // Set the updated list of PDFs back to the Proses entity
+                        proses.setPdfs(pdfs);
+
+                        // Save the updated Proses entity
+                        prosesRepository.save(proses);
+
+                        // PDF deleted successfully
+                        return;
+                    }
+                }
+            }
+            // If PDF not found, throw an exception
+            throw new IllegalArgumentException("PDF with ID " + pdfId + " not found");
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Failed to delete PDF: " + e.getMessage());
+        }
     }
 }

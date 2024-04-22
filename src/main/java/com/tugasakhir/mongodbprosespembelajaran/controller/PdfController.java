@@ -68,6 +68,22 @@ public class PdfController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to download PDF: " + e.getMessage());
         }
     }
+    @DeleteMapping("/delete/{idKelas}/{pdfId}")
+    public ResponseEntity<String> deletePdfById(@PathVariable String idKelas, @PathVariable String pdfId) {
+        try {
+            // Call the deletePdfById method from PdfService to delete the PDF
+            pdfService.deletePdfById(idKelas, pdfId);
+
+            return ResponseEntity.ok().body("PDF with ID " + pdfId + " deleted successfully from class ID: " + idKelas);
+        } catch (IllegalArgumentException e) {
+            // If PDF deletion fails due to invalid ID or other reasons
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            // If an unexpected error occurs during PDF deletion
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete PDF: " + e.getMessage());
+        }
+    }
+
 
 
 }
