@@ -4,6 +4,7 @@ import com.tugasakhir.mongodbprosespembelajaran.service.prosesService;
 import com.tugasakhir.mongodbprosespembelajaran.model.Pdf;
 import com.tugasakhir.mongodbprosespembelajaran.service.PdfService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -41,33 +42,65 @@ public class PdfController {
         }
     }
     @GetMapping("/download/{idKelas}/{pdfId}")
-    public ResponseEntity<ByteArrayResource> downloadPdf(@PathVariable String idKelas, @PathVariable String pdfId ) {
+    public ResponseEntity<Resource> downloadFile(@PathVariable String idKelas, @PathVariable String pdfId) {
         try {
-            Optional<byte[]> pdfOptional = pdfService.getPdfById(idKelas, pdfId);
-            if (pdfOptional.isPresent()) {
-                byte[] pdfBytes = pdfOptional.get();
-                ByteArrayResource resource = new ByteArrayResource(pdfBytes);
+            Optional<byte[]> fileOptional = pdfService.getPdfById(idKelas, pdfId); // Assuming pdfService.getFileById() returns the file bytes
+            if (fileOptional.isPresent()) {
+                byte[] fileBytes = fileOptional.get();
+                ByteArrayResource resource = new ByteArrayResource(fileBytes);
 
                 HttpHeaders headers = new HttpHeaders();
-                headers.setContentType(MediaType.APPLICATION_PDF);
 
-                // Get the filename using PdfService
+                // Determine the file extension from pdfId or use pdfService.getFileExtension(idKelas, pdfId) if available
+                String fileExtension = pdfId.substring(pdfId.lastIndexOf('.') + 1);
+
+                // Set the Content-Type header based on file extension
+                String contentType = getContentType(fileExtension);
+                headers.setContentType(MediaType.parseMediaType(contentType));
+
+                // Get the filename using PdfService or use pdfId as filename
                 String fileName = pdfService.getFileName(idKelas, pdfId);
 
-                // Set the Content-Disposition header to include the filenames
-                headers.setContentDispositionFormData("attachment",  fileName + "");
+                // Set the Content-Disposition header to include the filename
+                headers.setContentDispositionFormData("attachment", fileName);
 
                 return ResponseEntity.ok()
                         .headers(headers)
-                        .contentLength(pdfBytes.length)
+                        .contentLength(fileBytes.length)
                         .body(resource);
             } else {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "PDF not found");
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "File not found");
             }
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to download PDF: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to download file: " + e.getMessage());
         }
     }
+
+    private String getContentType(String fileExtension) {
+        switch (fileExtension.toLowerCase()) {
+            case "pdf":
+                return "application/pdf";
+            case "doc":
+            case "docx":
+                return "application/msword";
+            case "xls":
+            case "xlsx":
+                return "application/vnd.ms-excel";
+            case "ppt":
+            case "pptx":
+                return "application/vnd.ms-powerpoint";
+            case "png":
+                return "image/png";
+            case "jpg":
+            case "jpeg":
+                return "image/jpeg";
+            case "gif":
+                return "image/gif";
+            default:
+                return "application/octet-stream"; // Default to binary data if content type is unknown
+        }
+    }
+
     @DeleteMapping("/delete/{idKelas}/{pdfId}")
     public ResponseEntity<String> deletePdfById(@PathVariable String idKelas, @PathVariable String pdfId) {
         try {
