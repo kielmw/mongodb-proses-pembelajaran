@@ -86,7 +86,7 @@ public class PdfService {
             // Retrieve the list of PDFs from the Proses entity
             List<Pdf> pdfs = proses.getPdfs();
             if (pdfs != null) {
-                 // Iterate through the list of PDFs to find the PDF by ID
+                // Iterate through the list of PDFs to find the PDF by ID
                 for (Pdf pdf : pdfs) {
                     if (pdf.getIdPdf().equals(pdfId)) {
                         // Return the PDF content as byte array

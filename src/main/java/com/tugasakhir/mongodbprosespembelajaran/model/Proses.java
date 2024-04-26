@@ -28,12 +28,14 @@ public class Proses {
     @Field(name = "videoKelas ")
     private String videoKelas;
     private List<Pdf> pdfs;
+    private List<ItemPembelajaran> itemPembelajarans;
 
-    public Proses(String idKelas, String namaKelas, String videoKelas, List<Pdf> pdfs) {
+    public Proses(String idKelas, String namaKelas, String videoKelas, List<Pdf> pdfs, List<ItemPembelajaran> itemPembelajarans) {
         this.idKelas = idKelas;
         this.namaKelas = namaKelas;
         this.videoKelas = videoKelas;
         this.pdfs = pdfs;
+        this.itemPembelajarans = itemPembelajarans;
     }
 
     public String getIdKelas() {return idKelas;}
@@ -64,5 +66,12 @@ public class Proses {
 
     public void setPdfs(List<Pdf> pdfs) {
         this.pdfs = pdfs;
+    }
+    public List<ItemPembelajaran> getItemPembelajarans() {
+        return itemPembelajarans;
+    }
+
+    public void setItemPembelajarans(List<ItemPembelajaran> itemPembelajarans) {
+        this.itemPembelajarans = itemPembelajarans;
     }
 }
