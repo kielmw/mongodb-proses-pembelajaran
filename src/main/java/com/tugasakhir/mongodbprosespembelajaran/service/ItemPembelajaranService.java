@@ -29,27 +29,19 @@ public class ItemPembelajaranService {
     }
 
     public ItemPembelajaran addItemPembelajaran(ItemPembelajaran itemPembelajaran, String idKelas) {
-        // Retrieve the Proses entity by idKelas
-        Proses proses = prosesRepository.findById(idKelas)
+        // Retrieve the Proses entity by idPembelajaran to get idKelas
+        String idPertemuan = itemPembelajaran.getIdPertemuan(); // Corrected variable name
+        itemPembelajaran.setIdPertemuan(idPertemuan);
+        Proses proses = prosesRepository.findByIdKelas(idKelas)
                 .orElseThrow(() -> new IllegalArgumentException("Proses with idKelas " + idKelas + " not found"));
 
         // Set idKelas to ItemPembelajaran
         itemPembelajaran.setIdKelas(idKelas);
 
-        // Get all available file names
-        List<String> fileNameOptions = prosesRepository.findAllFileNameOptions();
-        if (fileNameOptions.isEmpty()) {
-            throw new IllegalStateException("No fileName options found.");
-        }
-
-        // Assuming you want to select the first fileName option
-        String fileName = fileNameOptions.get(0); // Selecting the first option here, you might want to implement your own logic to select the appropriate fileName
+        // Set idPdf and fileName based on Pdf model data
+        String idPdf = itemPembelajaran.getIdPdf(); // Assuming you have a getter for idPdf
+        String fileName = pdfService.getFileName(idKelas, idPdf); // Call method on the autowired PdfService
         itemPembelajaran.setFileName(fileName);
-
-        // Set idPdf based on fileName
-        String idPdf = fileName; // Assuming idPdf follows the fileName
-        itemPembelajaran.setIdPdf(idPdf);
-
         // Get the existing list of ItemPembelajarans from the Proses entity
         List<ItemPembelajaran> itemPembelajarans = proses.getItemPembelajarans();
         if (itemPembelajarans == null) {
@@ -66,5 +58,44 @@ public class ItemPembelajaranService {
 
         return itemPembelajaran;
     }
+
+//    public ItemPembelajaran addItemPembelajaran(ItemPembelajaran itemPembelajaran, String idKelas) {
+//        // Retrieve the Proses entity by idKelas
+//        Proses proses = prosesRepository.findById(idKelas)
+//                .orElseThrow(() -> new IllegalArgumentException("Proses with idKelas " + idKelas + " not found"));
+//
+//        // Set idKelas to ItemPembelajaran
+//        itemPembelajaran.setIdKelas(idKelas);
+//
+//        // Get all available file names
+//        List<String> fileNameOptions = prosesRepository.findAllFileNameOptions();
+//        if (fileNameOptions.isEmpty()) {
+//            throw new IllegalStateException("No fileName options found.");
+//        }
+//
+//        // Assuming you want to select the first fileName option
+//        String fileName = fileNameOptions.get(0); // Selecting the first option here, you might want to implement your own logic to select the appropriate fileName
+//        itemPembelajaran.setFileName(fileName);
+//
+//        // Set idPdf based on fileName
+//        String idPdf = fileName; // Assuming idPdf follows the fileName
+//        itemPembelajaran.setIdPdf(idPdf);
+//
+//        // Get the existing list of ItemPembelajarans from the Proses entity
+//        List<ItemPembelajaran> itemPembelajarans = proses.getItemPembelajarans();
+//        if (itemPembelajarans == null) {
+//            itemPembelajarans = new ArrayList<>();
+//        }
+//
+//        // Append the new ItemPembelaaran to the list
+//        itemPembelajarans.add(itemPembelajaran);
+//
+//        proses.setIdKelas(idKelas);
+//        proses.setItemPembelajarans(itemPembelajarans);
+//
+//        prosesRepository.save(proses);
+//
+//        return itemPembelajaran;
+//    }
 
 }
