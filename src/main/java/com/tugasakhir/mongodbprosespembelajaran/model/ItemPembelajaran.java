@@ -18,11 +18,14 @@ public class ItemPembelajaran {
     @Indexed(unique = true)
     private String idPertemuan;
     private String idKelas;
+    @Field(name = "headingPertemuan")
     private String headingPertemuan;
+    @Field(name = "bodyPertemuan")
     private String bodyPertemuan;
     @Field(name = "idPdf")
     private String idPdf;
     private String fileName;
+    @Field(name = "videoPertemuan")
     private String videoPertemuan;
 
     public ItemPembelajaran(String idPertemuan ,String idKelas, String bodyPertemuan, String idPdf, String fileName, String videoPertemuan) {

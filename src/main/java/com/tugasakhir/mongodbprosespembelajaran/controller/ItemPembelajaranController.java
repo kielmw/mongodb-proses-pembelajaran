@@ -23,4 +23,15 @@ public class ItemPembelajaranController {
         ItemPembelajaran newItemPembelajaran = itemPembelajaranService.addItemPembelajaran(itemPembelajaran, idKelas);
         return new ResponseEntity<>(newItemPembelajaran, HttpStatus.CREATED);
     }
+    @PutMapping("/update/{idKelas}/{idPertemuan}")
+    public ResponseEntity<ItemPembelajaran> updateItemPembelajaran(@PathVariable String idKelas, @PathVariable String idPertemuan, @RequestBody ItemPembelajaran updatedItem) {
+        ItemPembelajaran updatedPembelajaran = itemPembelajaranService.updateItemPembelajaran(idKelas, idPertemuan, updatedItem);
+        return new ResponseEntity<>(updatedPembelajaran, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete/{idKelas}/{idPertemuan}")
+    public ResponseEntity<Void> deleteItemPembelajaran(@PathVariable String idKelas, @PathVariable String idPertemuan) {
+        itemPembelajaranService.deleteItemPembelajaran(idKelas, idPertemuan);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
