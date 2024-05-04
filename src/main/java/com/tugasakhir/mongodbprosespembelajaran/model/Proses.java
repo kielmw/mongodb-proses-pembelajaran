@@ -22,6 +22,7 @@ public class Proses {
     @Id
     @Indexed(unique = true)
     private String idKelas;
+    private String nim;
     @Indexed(unique = true)
     @Field(name = "namaKelas ")
     private String namaKelas;
@@ -30,12 +31,21 @@ public class Proses {
     private List<Pdf> pdfs;
     private List<ItemPembelajaran> itemPembelajarans;
 
-    public Proses(String idKelas, String namaKelas, String videoKelas, List<Pdf> pdfs, List<ItemPembelajaran> itemPembelajarans) {
+    public Proses(String idKelas,String nim, String namaKelas, String videoKelas, List<Pdf> pdfs, List<ItemPembelajaran> itemPembelajarans) {
         this.idKelas = idKelas;
+        this.nim = nim;
         this.namaKelas = namaKelas;
         this.videoKelas = videoKelas;
         this.pdfs = pdfs;
         this.itemPembelajarans = itemPembelajarans;
+    }
+
+    public String getNim() {
+        return nim;
+    }
+ 
+    public void setNim(String nim) {
+        this.nim = nim;
     }
 
     public String getIdKelas() {return idKelas;}

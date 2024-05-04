@@ -28,6 +28,15 @@ public class ItemPembelajaranService {
         return fileNameOptions;
     }
 
+    public List<ItemPembelajaran> getItemPembelajaran(String idKelas) {
+        // Retrieve the Proses entity by idKelas to ensure its existence
+        Proses proses = prosesRepository.findByIdKelas(idKelas)
+                .orElseThrow(() -> new IllegalArgumentException("Proses with idKelas " + idKelas + " not found"));
+
+        // Return all items of ItemPembelajaran associated with the Proses
+        return proses.getItemPembelajarans();
+    }
+
     public ItemPembelajaran updateItemPembelajaran(String idKelas, String idPertemuan, ItemPembelajaran updatedItem) {
         // Retrieve the Proses entity by idKelas to ensure its existence
         Proses proses = prosesRepository.findByIdKelas(idKelas)
@@ -109,6 +118,7 @@ public class ItemPembelajaranService {
 
         return itemPembelajaran;
     }
+
 
 //     YANG DIBAWAH INI PDF PAKAI OPTION BASED ON itemPdf di idKelas
 //    public ItemPembelajaran addItemPembelajaran(ItemPembelajaran itemPembelajaran, String idKelas) {

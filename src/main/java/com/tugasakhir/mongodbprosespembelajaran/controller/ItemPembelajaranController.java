@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/proses/itemPembelajaran")
 public class ItemPembelajaranController {
@@ -34,4 +36,15 @@ public class ItemPembelajaranController {
         itemPembelajaranService.deleteItemPembelajaran(idKelas, idPertemuan);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+    @GetMapping("/get/{idKelas}")
+    public ResponseEntity<List<ItemPembelajaran>> getItemPembelajaran(@PathVariable String idKelas) {
+        // Implement your logic to retrieve the items based on idKelas
+        List<ItemPembelajaran> items = itemPembelajaranService.getItemPembelajaran(idKelas);
+        if (!items.isEmpty()) {
+            return new ResponseEntity<>(items, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
 }
