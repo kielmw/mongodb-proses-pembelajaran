@@ -1,10 +1,14 @@
 package com.tugasakhir.mongodbprosespembelajaran.service;
 
+import com.tugasakhir.mongodbprosespembelajaran.model.Member;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 import com.tugasakhir.mongodbprosespembelajaran.model.Proses;
 import com.tugasakhir.mongodbprosespembelajaran.repository.prosesRepository;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.List;
@@ -55,4 +59,10 @@ public class prosesService {
             throw new RuntimeException("Failed to delete Proses: " + e.getMessage());
         }
     }
+
+
+//    public List<Member> getMembersByKelasId(String idKelas) {
+//        // Implementasi untuk mendapatkan members berdasarkan idKelas
+//        // ...
+//    }
 }
