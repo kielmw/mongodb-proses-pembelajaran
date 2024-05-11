@@ -1,4 +1,4 @@
-package com.mysql.cj.jdbc;
+package sql;
 
 import com.tugasakhir.mongodbprosespembelajaran.model.Member;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +52,7 @@ public class Driver {
     @PostConstruct
     public void init() {
         // Listener untuk mendengarkan perubahan pada tabel "Student" di MySQL
-        jdbcTemplate.query("SELECT * FROM Student", (rs, rowNum) -> {
+        jdbcTemplate.query("SELECT * FROM kontrol_kelas.students", (rs, rowNum) -> {
             Long id = rs.getLong("id");
             String nim = rs.getString("nim");
             String nama = rs.getString("nama");
