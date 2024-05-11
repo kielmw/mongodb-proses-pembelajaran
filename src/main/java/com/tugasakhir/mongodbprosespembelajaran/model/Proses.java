@@ -22,52 +22,43 @@ public class Proses {
     @Id
     @Indexed(unique = true)
     private String idKelas;
-    private String nim;
     @Indexed(unique = true)
     @Field(name = "namaKelas ")
     private String namaKelas;
-    @Field(name = "videoKelas ")
-    private String videoKelas;
+    private List<Member> members;
     private List<Pdf> pdfs;
     private List<ItemPembelajaran> itemPembelajarans;
 
-    public Proses(String idKelas,String nim, String namaKelas, String videoKelas, List<Pdf> pdfs, List<ItemPembelajaran> itemPembelajarans) {
+    public Proses(String idKelas, String namaKelas, List<Member> members, List<Pdf> pdfs, List<ItemPembelajaran> itemPembelajarans) {
         this.idKelas = idKelas;
-        this.nim = nim;
         this.namaKelas = namaKelas;
-        this.videoKelas = videoKelas;
+        this.members = members;
         this.pdfs = pdfs;
         this.itemPembelajarans = itemPembelajarans;
     }
 
-    public String getNim() {
-        return nim;
-    }
- 
-    public void setNim(String nim) {
-        this.nim = nim;
-    }
-
-    public String getIdKelas() {return idKelas;}
-
-    public String getNamaKelas() {
-        return namaKelas;
-    }
-
-    public String getVideoKelas() {
-        return videoKelas;
+    public String getIdKelas() {
+        return idKelas;
     }
 
     public void setIdKelas(String idKelas) {
         this.idKelas = idKelas;
     }
 
+    public String getNamaKelas() {
+        return namaKelas;
+    }
+
     public void setNamaKelas(String namaKelas) {
         this.namaKelas = namaKelas;
     }
 
-    public void setVideoKelas(String videoKelas) {
-        this.videoKelas = videoKelas;
+    public List<Member> getMember() {
+        return members;
+    }
+
+    public void setMember(List<Member> members) {
+        this.members = members;
     }
 
     public List<Pdf> getPdfs() {
@@ -77,6 +68,7 @@ public class Proses {
     public void setPdfs(List<Pdf> pdfs) {
         this.pdfs = pdfs;
     }
+
     public List<ItemPembelajaran> getItemPembelajarans() {
         return itemPembelajarans;
     }
