@@ -9,9 +9,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Getter
 @Setter
 @NoArgsConstructor
-@Document("members")
+@Document(collection = "member")
 public class Member {
-    private Long id;
+    private String id;
 
     private String nim;
 
@@ -19,18 +19,18 @@ public class Member {
 
     private String idKelas;
 
-    public Member(Long id, String nim, String nama, String idKelas) {
+    public Member(String id, String nim, String nama, String idKelas) {
         this.id = id;
         this.nim = nim;
         this.nama = nama;
         this.idKelas = idKelas;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
