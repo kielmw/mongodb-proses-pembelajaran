@@ -11,6 +11,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -19,7 +21,8 @@ import java.util.List;
 @NoArgsConstructor
 @Document("proses")
 public class Proses {
-    @Id
+//    @Id
+//    private Long id;
     @Indexed(unique = true)
     private String idKelas;
     @Indexed(unique = true)
@@ -29,10 +32,10 @@ public class Proses {
     private List<Pdf> pdfs;
     private List<ItemPembelajaran> itemPembelajarans;
 
-    public Proses(String idKelas, String namaKelas, List<Member> members, List<Pdf> pdfs, List<ItemPembelajaran> itemPembelajarans) {
+    public Proses(String idKelas, String namaKelas, List<Pdf> pdfs, List<ItemPembelajaran> itemPembelajarans) {
         this.idKelas = idKelas;
         this.namaKelas = namaKelas;
-        this.members = members;
+        this.members = new ArrayList<>();
         this.pdfs = pdfs;
         this.itemPembelajarans = itemPembelajarans;
     }
@@ -75,5 +78,13 @@ public class Proses {
 
     public void setItemPembelajarans(List<ItemPembelajaran> itemPembelajarans) {
         this.itemPembelajarans = itemPembelajarans;
+    }
+
+    public void addMember(Member member) {
+        if (member.getIdKelas().equals(this.idKelas)) {
+            this.members.add(member);
+        } else {
+            // Handle the case where the member's idKelas does not match this Proses' idKelas
+        }
     }
 }

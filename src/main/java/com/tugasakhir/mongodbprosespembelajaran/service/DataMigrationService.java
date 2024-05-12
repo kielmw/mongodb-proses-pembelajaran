@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Component
 public class DataMigrationService {
     @Autowired
     private StudentRepository studentRepository;
@@ -23,6 +24,7 @@ public class DataMigrationService {
     private MemberRepository memberRepository;
 
     @PostConstruct
+    @Scheduled(fixedDelay = 5000)
     public void migrateData() {
         // Clear existing data in the Member repository
         memberRepository.deleteAll();
