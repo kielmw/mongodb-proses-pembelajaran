@@ -21,16 +21,16 @@ public class MemberUpdater {
         this.memberRepository = memberRepository;
     }
 
-    @Scheduled(fixedRate = 5000) // Run every 5 seconds
-    public void updateMembers() {
-        List<Proses> allProses = prosesRepository.findAll();
-        for (Proses proses : allProses) {
-            String idKelas = proses.getIdKelas();
-            List<Member> members = memberRepository.findByIdKelas(idKelas);
-            for (Member member : members) {
-                proses.addMember(member);
-            }
-            prosesRepository.save(proses); // Save the updated Proses
-        }
-    }
+//    @Scheduled(fixedRate = 5000) // Run every 5 seconds
+//    public void updateMembers() {
+//        List<Proses> allProses = prosesRepository.findAll();
+//        for (Proses proses : allProses) {
+//            String idKelas = proses.getIdKelas();
+//            List<Member> members = memberRepository.findByIdKelas(idKelas);
+//            for (Member member : members) {
+//                proses.addMember(member);
+//            }
+//            prosesRepository.save(proses); // Save the updated Proses
+//        }
+//    }
 }
