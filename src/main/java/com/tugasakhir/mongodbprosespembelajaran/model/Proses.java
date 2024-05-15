@@ -1,6 +1,8 @@
 package com.tugasakhir.mongodbprosespembelajaran.model;
 
 
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,8 +23,9 @@ import java.util.List;
 @NoArgsConstructor
 @Document("proses")
 public class Proses {
-//    @Id
-//    private Long id;
+    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private int id;
     @Indexed(unique = true)
     private String idKelas;
     @Indexed(unique = true)
@@ -32,10 +35,10 @@ public class Proses {
     private List<Pdf> pdfs;
     private List<ItemPembelajaran> itemPembelajarans;
 
-    public Proses(String idKelas, String namaKelas, List<Pdf> pdfs, List<ItemPembelajaran> itemPembelajarans) {
+    public Proses(String idKelas, String namaKelas, List<Member> members, List<Pdf> pdfs, List<ItemPembelajaran> itemPembelajarans) {
         this.idKelas = idKelas;
         this.namaKelas = namaKelas;
-        this.members = new ArrayList<>();
+        this.members = members;
         this.pdfs = pdfs;
         this.itemPembelajarans = itemPembelajarans;
     }
@@ -56,11 +59,11 @@ public class Proses {
         this.namaKelas = namaKelas;
     }
 
-    public List<Member> getMember() {
+    public List<Member> getMembers() {
         return members;
     }
 
-    public void setMember(List<Member> members) {
+    public void setMembers(List<Member> members) {
         this.members = members;
     }
 
@@ -80,7 +83,7 @@ public class Proses {
         this.itemPembelajarans = itemPembelajarans;
     }
 
-//    public void addMember(Member member) {
+    //    public void addMember(Member member) {
 //        if (member.getIdKelas().equals(this.idKelas)) {
 //            this.members.add(member);
 //        } else {

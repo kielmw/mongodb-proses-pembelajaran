@@ -31,7 +31,7 @@ public class DataMigrationService {
     }
 
     @PostConstruct
-    @Scheduled(fixedDelay = 15000)
+    @Scheduled(fixedDelay = 100000)
     public void migrateData() {
         try {
             // Clear existing data in the Member repository

@@ -35,7 +35,7 @@ public class PdfService {
             pdf.setPdfBytes(pdfBytes);
 
             // Get the existing Proses entity by ID
-            Proses proses = prosesRepository.findById(idKelas)
+            Proses proses = prosesRepository.findByIdKelas(idKelas)
                     .orElseThrow(() -> new IllegalArgumentException("Proses with ID " + idKelas + " not found"));
 
             // Get the existing list of PDFs from the Proses entity
