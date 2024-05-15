@@ -1,16 +1,13 @@
 package com.tugasakhir.mongodbprosespembelajaran.service;
 
-import com.tugasakhir.mongodbprosespembelajaran.model.Member;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.stereotype.Service;
 import com.tugasakhir.mongodbprosespembelajaran.model.Proses;
 import com.tugasakhir.mongodbprosespembelajaran.repository.prosesRepository;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Query;
-import java.io.IOException;
-import java.util.Objects;
+import com.tugasakhir.mongodbprosespembelajaran.model.Member;
+import com.tugasakhir.mongodbprosespembelajaran.repository.MemberRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,52 +15,70 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class prosesService {
 
-    private final prosesRepository ProsesRepository;
+    private final prosesRepository prosesRepository;
     private final PdfService pdfService;
+    private final MemberRepository memberRepository;
 
-    public void addProses(Proses proses){
-        ProsesRepository.insert(proses);
+    public void addProses(Proses proses) {
+        prosesRepository.save(proses);
     }
 
-    public void updateProses(Proses proses){
-        Proses savedProses = ProsesRepository.findById(proses.getIdKelas())
+    public void updateProses(Proses proses) {
+        Proses savedProses = prosesRepository.findByIdKelas(proses.getIdKelas())
                 .orElseThrow(() -> new RuntimeException(
-                        String.format("Cannot Find PROSES ID %s", proses.getIdKelas())));
+                        String.format("Cannot find Proses with ID %s", proses.getIdKelas())));
 
         savedProses.setIdKelas(proses.getIdKelas());
 
-        ProsesRepository.save(proses);
+        prosesRepository.save(savedProses);
     }
 
-    public Proses getProses(String idKelas) {
-        return ProsesRepository.findByIdKelas(idKelas)
-                .orElseThrow(() -> new RuntimeException(String.format("Cannot Find Expense by ID - %s", idKelas)));
+    public Proses getProses(String id) {
+        return prosesRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException(String.format("Cannot find Proses by ID - %s", id)));
     }
 
-    public List<Proses> getAllProses(){
-        return ProsesRepository.findAll();
+    public List<Proses> getAllProses() {
+        return prosesRepository.findAll();
     }
 
-    public void deleteProses(String idKelas) {
+    public void deleteProses(String id) {
         try {
             // Retrieve the Proses entity by ID
-            Proses proses = ProsesRepository.findByIdKelas(idKelas)
-                    .orElseThrow(() -> new RuntimeException("Proses with ID " + idKelas + " not found"));
+            Proses proses = prosesRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Proses with ID " + id + " not found"));
 
             // Delete any associated PDFs first using an instance of PdfService
-            pdfService.deleteAllPdfByProsesId(idKelas);
+            pdfService.deleteAllPdfByProsesId(id);
 
             // After deleting associated PDFs, delete the Proses entity
-            ProsesRepository.deleteById(idKelas);
+            prosesRepository.deleteById(id);
         } catch (Exception e) {
             throw new RuntimeException("Failed to delete Proses: " + e.getMessage());
         }
     }
+    public List<Proses> getProsesByNim(int nim) {
+        // Retrieve Member by nim to get idKelas
+        Optional<Member> memberOptional = memberRepository.findByNim(nim);
 
+        if (!memberOptional.isPresent()) {
+            throw new RuntimeException("Member with nim " + nim + " not found");
+        }
 
+        Member member = memberOptional.get();
+        int idKelas = member.getIdKelas();
 
-//    public List<Member> getMembersByKelasId(String idKelas) {
-//        // Implementasi untuk mendapatkan members berdasarkan idKelas
-//        // ...
-//    }
+        // Convert idKelas to String
+        String idKelasString = String.valueOf(idKelas);
+
+        // Retrieve Proses by idKelas
+        List<Proses> prosesList = prosesRepository.findByIdKelas2(idKelasString);
+
+        if (prosesList.isEmpty()) {
+            throw new RuntimeException("No Proses found for nim " + nim + " and idKelas " + idKelasString);
+        }
+
+        return prosesList;
+    }
+
 }

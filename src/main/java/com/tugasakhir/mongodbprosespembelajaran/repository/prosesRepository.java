@@ -17,6 +17,8 @@ import java.util.function.Function;
 public interface prosesRepository extends MongoRepository <Proses, String> {
     @Query("{'idKelas' : ?0}")
     Optional<Proses>findByIdKelas(String idKelas);
+    @Query("{'idKelas' : ?0}")
+    List<Proses>findByIdKelas2(String idKelas);
     @Query("{'idPdf' : ?0}")
     Optional<Proses>findByIdPdf(String idKelas);
     Optional<Proses> findByItemPembelajaransIdPertemuan(String idPertemuan);
