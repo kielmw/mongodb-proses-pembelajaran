@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Collections;
 import java.util.List;
 
 
@@ -15,15 +16,10 @@ import java.util.List;
 @Document(collection = "member")
 public class Member {
     private String id;
-
     private int nim;
+    private List<Integer> idKelas; // Changed type to List<Integer>
 
-//    private String nama;
-//
-//    private int idKelas;
-    private int idKelas;
-
-    public Member(String id, int nim, int idKelas) {
+    public Member(String id, int nim, List<Integer> idKelas) {
         this.id = id;
         this.nim = nim;
         this.idKelas = idKelas;
@@ -45,19 +41,11 @@ public class Member {
         this.nim = nim;
     }
 
-    public int getIdKelas() {
+    public List<Integer> getIdKelas() {
         return idKelas;
     }
 
-    public void setIdKelas(int idKelas) {
+    public void setIdKelas(List<Integer> idKelas) {
         this.idKelas = idKelas;
     }
-
-//    public List<String> getIdKelas() {
-//        return idKelas;
-//    }
-//
-//    public void setIdKelas(List<String> idKelas) {
-//        this.idKelas = idKelas;
-//    }
 }

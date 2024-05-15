@@ -10,10 +10,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class DataMigrationService {
@@ -47,39 +44,32 @@ public class DataMigrationService {
                 return;
             }
 
-            List<Member> members = new ArrayList<>();
-            Set<String> processedStudents = new HashSet<>(); // To track processed students by composite key
-            int count = 0;
+            Map<Integer, List<Integer>> nimToIdKelasMap = new HashMap<>();
 
-            // Log each student to ensure proper data retrieval
+            // Aggregate idKelas for each nim
             for (Student student : students) {
-                String studentKey = student.getNim() + "-" + student.getIdKelas();
-                if (processedStudents.contains(studentKey)) {
-                    logger.warn("Duplicate student record found: nim={}, kelasId={}", student.getNim(), student.getIdKelas());
-                    continue;
-                }
+                int nim = student.getNim();
+                int idKelas = student.getIdKelas();
+                nimToIdKelasMap.computeIfAbsent(nim, k -> new ArrayList<>()).add(idKelas);
+            }
 
-                logger.info("Processing student: nim={}, kelasId={}", student.getNim(), student.getIdKelas());
-                processedStudents.add(studentKey);
+            List<Member> members = new ArrayList<>();
+
+            // Convert nimToIdKelasMap entries to Member objects
+            for (Map.Entry<Integer, List<Integer>> entry : nimToIdKelasMap.entrySet()) {
+                int nim = entry.getKey();
+                List<Integer> idKelasList = entry.getValue();
 
                 Member member = new Member();
-                member.setNim(student.getNim());
-                member.setIdKelas(student.getIdKelas());
+                member.setNim(nim);
+                member.setIdKelas(idKelasList);
                 members.add(member);
-
-                if (++count % BATCH_SIZE == 0) {
-                    // Save in batches
-                    memberRepository.saveAll(members);
-                    logger.info("Saved {} members to Member repository in current batch.", members.size());
-                    members.clear();
-                }
             }
 
-            // Save remaining members
-            if (!members.isEmpty()) {
-                memberRepository.saveAll(members);
-                logger.info("Saved {} members to Member repository in final batch.", members.size());
-            }
+            // Save members to MongoDB
+            memberRepository.saveAll(members);
+            logger.info("Saved {} members to Member repository.", members.size());
+
         } catch (Exception e) {
             logger.error("Error during data migration", e);
         }

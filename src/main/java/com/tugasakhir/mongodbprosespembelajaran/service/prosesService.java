@@ -7,9 +7,11 @@ import com.tugasakhir.mongodbprosespembelajaran.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -57,6 +59,7 @@ public class prosesService {
             throw new RuntimeException("Failed to delete Proses: " + e.getMessage());
         }
     }
+
     public List<Proses> getProsesByNim(int nim) {
         // Retrieve Member by nim to get idKelas
         Optional<Member> memberOptional = memberRepository.findByNim(nim);
@@ -66,16 +69,19 @@ public class prosesService {
         }
 
         Member member = memberOptional.get();
-        int idKelas = member.getIdKelas();
+        List<Integer> idKelasList = member.getIdKelas();
 
-        // Convert idKelas to String
-        String idKelasString = String.valueOf(idKelas);
+        // Convert idKelasList to list of strings
+        List<String> idKelasStringList = new ArrayList<>();
+        for (Integer idKelas : idKelasList) {
+            idKelasStringList.add(String.valueOf(idKelas));
+        }
 
-        // Retrieve Proses by idKelas
-        List<Proses> prosesList = prosesRepository.findByIdKelas2(idKelasString);
+        // Retrieve Proses for each idKelas in the idKelasList
+        List<Proses> prosesList = prosesRepository.findByIdKelasList(idKelasStringList);
 
         if (prosesList.isEmpty()) {
-            throw new RuntimeException("No Proses found for nim " + nim + " and idKelas " + idKelasString);
+            throw new RuntimeException("No Proses found for nim " + nim);
         }
 
         return prosesList;
