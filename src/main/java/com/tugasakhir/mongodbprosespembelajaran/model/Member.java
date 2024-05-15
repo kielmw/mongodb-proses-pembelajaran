@@ -21,7 +21,6 @@ public class Member {
 //    private String nama;
 //
 //    private int idKelas;
-    @ElementCollection
     private int idKelas;
 
     public Member(String id, int nim, int idKelas) {

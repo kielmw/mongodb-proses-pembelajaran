@@ -53,18 +53,18 @@ public class DataMigrationService {
 
             // Log each student to ensure proper data retrieval
             for (Student student : students) {
-                String studentKey = student.getNim() + "-" + student.getKelasId();
+                String studentKey = student.getNim() + "-" + student.getIdKelas();
                 if (processedStudents.contains(studentKey)) {
-                    logger.warn("Duplicate student record found: nim={}, kelasId={}", student.getNim(), student.getKelasId());
+                    logger.warn("Duplicate student record found: nim={}, kelasId={}", student.getNim(), student.getIdKelas());
                     continue;
                 }
 
-                logger.info("Processing student: nim={}, kelasId={}", student.getNim(), student.getKelasId());
+                logger.info("Processing student: nim={}, kelasId={}", student.getNim(), student.getIdKelas());
                 processedStudents.add(studentKey);
 
                 Member member = new Member();
                 member.setNim(student.getNim());
-                member.setIdKelas(student.getKelasId());
+                member.setIdKelas(student.getIdKelas());
                 members.add(member);
 
                 if (++count % BATCH_SIZE == 0) {
