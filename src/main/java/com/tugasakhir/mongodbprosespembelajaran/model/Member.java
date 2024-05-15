@@ -1,9 +1,12 @@
 package com.tugasakhir.mongodbprosespembelajaran.model;
 
+import jakarta.persistence.ElementCollection;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.List;
 
 
 @Getter
@@ -13,16 +16,17 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Member {
     private String id;
 
-    private String nim;
+    private int nim;
 
-    private String nama;
+//    private String nama;
+//
+//    private int idKelas;
+    @ElementCollection
+    private int idKelas;
 
-    private String idKelas;
-
-    public Member(String id, String nim, String nama, String idKelas) {
+    public Member(String id, int nim, int idKelas) {
         this.id = id;
         this.nim = nim;
-        this.nama = nama;
         this.idKelas = idKelas;
     }
 
@@ -34,27 +38,27 @@ public class Member {
         this.id = id;
     }
 
-    public String getNim() {
+    public int getNim() {
         return nim;
     }
 
-    public void setNim(String nim) {
+    public void setNim(int nim) {
         this.nim = nim;
     }
 
-    public String getNama() {
-        return nama;
-    }
-
-    public void setNama(String nama) {
-        this.nama = nama;
-    }
-
-    public String getIdKelas() {
+    public int getIdKelas() {
         return idKelas;
     }
 
-    public void setIdKelas(String idKelas) {
+    public void setIdKelas(int idKelas) {
         this.idKelas = idKelas;
     }
+
+//    public List<String> getIdKelas() {
+//        return idKelas;
+//    }
+//
+//    public void setIdKelas(List<String> idKelas) {
+//        this.idKelas = idKelas;
+//    }
 }

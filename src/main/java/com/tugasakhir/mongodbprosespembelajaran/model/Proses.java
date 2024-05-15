@@ -80,11 +80,11 @@ public class Proses {
         this.itemPembelajarans = itemPembelajarans;
     }
 
-    public void addMember(Member member) {
-        if (member.getIdKelas().equals(this.idKelas)) {
-            this.members.add(member);
-        } else {
-            // Handle the case where the member's idKelas does not match this Proses' idKelas
-        }
-    }
+//    public void addMember(Member member) {
+//        if (member.getIdKelas().equals(this.idKelas)) {
+//            this.members.add(member);
+//        } else {
+//            // Handle the case where the member's idKelas does not match this Proses' idKelas
+//        }
+//    }
 }

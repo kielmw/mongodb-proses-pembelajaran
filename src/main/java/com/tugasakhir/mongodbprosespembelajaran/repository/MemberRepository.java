@@ -5,7 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface MemberRepository extends MongoRepository<Member, Long> {
-    List<Member> findByIdKelas(String idKelas);
+    Optional<Member> findByNim(int nim);
 }

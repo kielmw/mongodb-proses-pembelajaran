@@ -4,46 +4,84 @@ import com.tugasakhir.mongodbprosespembelajaran.model.Member;
 import com.tugasakhir.mongodbprosespembelajaran.model.Student;
 import com.tugasakhir.mongodbprosespembelajaran.repository.MemberRepository;
 import com.tugasakhir.mongodbprosespembelajaran.repository.StudentRepository;
-import jakarta.annotation.PostConstruct;
-import oracle.ucp.proxy.annotation.Post;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
-@Component
 public class DataMigrationService {
-    @Autowired
-    private StudentRepository studentRepository;
 
-    @Autowired
-    private MemberRepository memberRepository;
+    private static final Logger logger = LoggerFactory.getLogger(DataMigrationService.class);
 
-    @PostConstruct
-    @Scheduled(fixedDelay = 5000)
-    public void migrateData() {
-        // Clear existing data in the Member repository
-        memberRepository.deleteAll();
+    private static final int BATCH_SIZE = 100; // Adjust batch size as needed
 
-        // Retrieve students from the Student repository
-        List<Student> students = studentRepository.findAll();
-        List<Member> members = new ArrayList<>();
+    private final StudentRepository studentRepository;
+    private final MemberRepository memberRepository;
 
-        // Convert Student objects to Member objects
-        for (Student student : students) {
-            Member member = new Member();
-            member.setNim(student.getNim());
-            member.setNama(student.getNama());
-            member.setIdKelas(String.valueOf(student.getKelasId())); // Convert int to String
-            members.add(member);
-        }
-
-        // Save the Member objects to the Member repository
-        memberRepository.saveAll(members);
+    public DataMigrationService(StudentRepository studentRepository, MemberRepository memberRepository) {
+        this.studentRepository = studentRepository;
+        this.memberRepository = memberRepository;
     }
 
+    @PostConstruct
+    @Scheduled(fixedDelay = 15000)
+    public void migrateData() {
+        try {
+            // Clear existing data in the Member repository
+            memberRepository.deleteAll();
+            logger.info("Existing data in Member repository cleared.");
+
+            // Retrieve students from the Student repository
+            List<Student> students = studentRepository.findAll();
+            logger.info("Retrieved {} students from Student repository.", students.size());
+
+            if (students.isEmpty()) {
+                logger.warn("No students found in the repository.");
+                return;
+            }
+
+            List<Member> members = new ArrayList<>();
+            Set<String> processedStudents = new HashSet<>(); // To track processed students by composite key
+            int count = 0;
+
+            // Log each student to ensure proper data retrieval
+            for (Student student : students) {
+                String studentKey = student.getNim() + "-" + student.getKelasId();
+                if (processedStudents.contains(studentKey)) {
+                    logger.warn("Duplicate student record found: nim={}, kelasId={}", student.getNim(), student.getKelasId());
+                    continue;
+                }
+
+                logger.info("Processing student: nim={}, kelasId={}", student.getNim(), student.getKelasId());
+                processedStudents.add(studentKey);
+
+                Member member = new Member();
+                member.setNim(student.getNim());
+                member.setIdKelas(student.getKelasId());
+                members.add(member);
+
+                if (++count % BATCH_SIZE == 0) {
+                    // Save in batches
+                    memberRepository.saveAll(members);
+                    logger.info("Saved {} members to Member repository in current batch.", members.size());
+                    members.clear();
+                }
+            }
+
+            // Save remaining members
+            if (!members.isEmpty()) {
+                memberRepository.saveAll(members);
+                logger.info("Saved {} members to Member repository in final batch.", members.size());
+            }
+        } catch (Exception e) {
+            logger.error("Error during data migration", e);
+        }
+    }
 }
