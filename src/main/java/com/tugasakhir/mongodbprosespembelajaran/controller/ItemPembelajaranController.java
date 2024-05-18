@@ -21,10 +21,11 @@ public class ItemPembelajaranController {
     }
 
     @PostMapping("/add/{idKelas}")
-    public ResponseEntity<ItemPembelajaran> addItemPembelajaran(@PathVariable String idKelas , @RequestBody ItemPembelajaran itemPembelajaran) {
+    public ResponseEntity<ItemPembelajaran> addItemPembelajaran(@PathVariable String idKelas, @RequestBody ItemPembelajaran itemPembelajaran) {
         ItemPembelajaran newItemPembelajaran = itemPembelajaranService.addItemPembelajaran(itemPembelajaran, idKelas);
         return new ResponseEntity<>(newItemPembelajaran, HttpStatus.CREATED);
     }
+
     @PutMapping("/update/{idKelas}/{idPertemuan}")
     public ResponseEntity<ItemPembelajaran> updateItemPembelajaran(@PathVariable String idKelas, @PathVariable String idPertemuan, @RequestBody ItemPembelajaran updatedItem) {
         ItemPembelajaran updatedPembelajaran = itemPembelajaranService.updateItemPembelajaran(idKelas, idPertemuan, updatedItem);
@@ -36,9 +37,9 @@ public class ItemPembelajaranController {
         itemPembelajaranService.deleteItemPembelajaran(idKelas, idPertemuan);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
     @GetMapping("/get/{idKelas}")
     public ResponseEntity<List<ItemPembelajaran>> getItemPembelajaran(@PathVariable String idKelas) {
-        // Implement your logic to retrieve the items based on idKelas
         List<ItemPembelajaran> items = itemPembelajaranService.getItemPembelajaran(idKelas);
         if (!items.isEmpty()) {
             return new ResponseEntity<>(items, HttpStatus.OK);
@@ -46,5 +47,4 @@ public class ItemPembelajaranController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-
 }

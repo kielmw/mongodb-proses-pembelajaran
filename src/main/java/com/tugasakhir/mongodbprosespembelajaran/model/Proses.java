@@ -24,21 +24,23 @@ import java.util.List;
 @Document("proses")
 public class Proses {
     @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private int id;
     @Indexed(unique = true)
     private String idKelas;
     @Indexed(unique = true)
     @Field(name = "namaKelas ")
     private String namaKelas;
-    private List<Member> members;
+    private String deskripsiKelas;
+    private String namaGuru;
+    private int idGuru;
     private List<Pdf> pdfs;
     private List<ItemPembelajaran> itemPembelajarans;
 
-    public Proses(String idKelas, String namaKelas, List<Member> members, List<Pdf> pdfs, List<ItemPembelajaran> itemPembelajarans) {
+    public Proses(String idKelas, String namaKelas, String deskripsiKelas, String namaGuru, int idGuru, List<Pdf> pdfs, List<ItemPembelajaran> itemPembelajarans) {
         this.idKelas = idKelas;
         this.namaKelas = namaKelas;
-        this.members = members;
+        this.deskripsiKelas = deskripsiKelas;
+        this.namaGuru = namaGuru;
+        this.idGuru = idGuru;
         this.pdfs = pdfs;
         this.itemPembelajarans = itemPembelajarans;
     }
@@ -59,12 +61,12 @@ public class Proses {
         this.namaKelas = namaKelas;
     }
 
-    public List<Member> getMembers() {
-        return members;
+    public String getDeskripsiKelas() {
+        return deskripsiKelas;
     }
 
-    public void setMembers(List<Member> members) {
-        this.members = members;
+    public void setDeskripsiKelas(String deskripsiKelas) {
+        this.deskripsiKelas = deskripsiKelas;
     }
 
     public List<Pdf> getPdfs() {
@@ -83,11 +85,19 @@ public class Proses {
         this.itemPembelajarans = itemPembelajarans;
     }
 
-    //    public void addMember(Member member) {
-//        if (member.getIdKelas().equals(this.idKelas)) {
-//            this.members.add(member);
-//        } else {
-//            // Handle the case where the member's idKelas does not match this Proses' idKelas
-//        }
-//    }
+    public String getNamaGuru() {
+        return namaGuru;
+    }
+
+    public void setNamaGuru(String namaGuru) {
+        this.namaGuru = namaGuru;
+    }
+
+    public int getIdGuru() {
+        return idGuru;
+    }
+
+    public void setIdGuru(int idGuru) {
+        this.idGuru = idGuru;
+    }
 }
