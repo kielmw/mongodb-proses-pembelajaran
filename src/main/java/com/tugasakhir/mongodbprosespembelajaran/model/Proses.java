@@ -24,10 +24,7 @@ import java.util.List;
 @Document("proses")
 public class Proses {
     @Id
-    @Indexed(unique = true)
     private String idKelas;
-    @Indexed(unique = true)
-    @Field(name = "namaKelas ")
     private String namaKelas;
     private String deskripsiKelas;
     private String namaGuru;

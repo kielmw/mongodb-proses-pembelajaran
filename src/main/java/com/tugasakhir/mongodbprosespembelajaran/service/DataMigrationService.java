@@ -1,13 +1,11 @@
 package com.tugasakhir.mongodbprosespembelajaran.service;
 
-import com.tugasakhir.mongodbprosespembelajaran.model.Kelas;
-import com.tugasakhir.mongodbprosespembelajaran.model.Member;
-import com.tugasakhir.mongodbprosespembelajaran.model.ProsesUpdater;
-import com.tugasakhir.mongodbprosespembelajaran.model.Student;
+import com.tugasakhir.mongodbprosespembelajaran.model.*;
 import com.tugasakhir.mongodbprosespembelajaran.repository.KelasRepository;
 import com.tugasakhir.mongodbprosespembelajaran.repository.MemberRepository;
 import com.tugasakhir.mongodbprosespembelajaran.repository.ProsesUpdaterRepository;
 import com.tugasakhir.mongodbprosespembelajaran.repository.StudentRepository;
+import com.tugasakhir.mongodbprosespembelajaran.repository.prosesRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -23,18 +21,20 @@ public class DataMigrationService {
 
     private static final int BATCH_SIZE = 100; // Adjust batch size as needed
 
-
     private final StudentRepository studentRepository;
     private final MemberRepository memberRepository;
     private final KelasRepository kelasRepository;
     private final ProsesUpdaterRepository prosesUpdaterRepository;
+    private final prosesRepository prosesRepository;
 
     public DataMigrationService(StudentRepository studentRepository, MemberRepository memberRepository,
-                                KelasRepository kelasRepository, ProsesUpdaterRepository prosesUpdaterRepository) {
+                                KelasRepository kelasRepository, ProsesUpdaterRepository prosesUpdaterRepository,
+                                prosesRepository prosesRepository) {
         this.studentRepository = studentRepository;
         this.memberRepository = memberRepository;
         this.kelasRepository = kelasRepository;
         this.prosesUpdaterRepository = prosesUpdaterRepository;
+        this.prosesRepository = prosesRepository;
     }
 
     @PostConstruct
@@ -121,6 +121,51 @@ public class DataMigrationService {
 
         } catch (Exception e) {
             logger.error("Error during Kelas data migration", e);
+        }
+    }
+
+    @Scheduled(fixedRate = 60000)
+    public void updateProsesFromProsesUpdater() {
+        try {
+            // Retrieve all ProsesUpdater records
+            List<ProsesUpdater> prosesUpdaters = prosesUpdaterRepository.findAll();
+            logger.info("Retrieved {} ProsesUpdater records.", prosesUpdaters.size());
+
+            for (ProsesUpdater updater : prosesUpdaters) {
+                // Convert idKelas from int to String
+                String idKelasString = String.valueOf(updater.getIdKelas());
+
+                // Find corresponding Proses by idKelas
+                Optional<Proses> optionalProses = prosesRepository.findById(idKelasString);
+                if (optionalProses.isPresent()) {
+                    Proses proses = optionalProses.get();
+                    // Update Proses fields
+                    proses.setNamaKelas(updater.getNamaKelas());
+                    proses.setDeskripsiKelas(updater.getDeskripsiKelas());
+                    proses.setIdGuru(updater.getIdGuru());
+                    proses.setNamaGuru(updater.getNamaGuru());
+
+                    // Save updated Proses back to the repository
+                    prosesRepository.save(proses);
+                    logger.info("Updated Proses with idKelas: {}", updater.getIdKelas());
+                } else {
+                    // If Proses does not exist, create a new one
+                    Proses newProses = new Proses();
+                    newProses.setIdKelas(idKelasString);
+                    newProses.setNamaKelas(updater.getNamaKelas());
+                    newProses.setDeskripsiKelas(updater.getDeskripsiKelas());
+                    newProses.setIdGuru(updater.getIdGuru());
+                    newProses.setNamaGuru(updater.getNamaGuru());
+                    newProses.setPdfs(new ArrayList<>()); // Initialize empty lists
+                    newProses.setItemPembelajarans(new ArrayList<>());
+
+                    // Save the new Proses to the repository
+                    prosesRepository.save(newProses);
+                    logger.info("Created new Proses with idKelas: {}", updater.getIdKelas());
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Error updating Proses from ProsesUpdater", e);
         }
     }
 }
