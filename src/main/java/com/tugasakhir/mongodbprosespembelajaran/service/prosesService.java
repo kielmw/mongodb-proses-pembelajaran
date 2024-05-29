@@ -1,5 +1,6 @@
 package com.tugasakhir.mongodbprosespembelajaran.service;
 
+import com.tugasakhir.mongodbprosespembelajaran.model.Pdf;
 import com.tugasakhir.mongodbprosespembelajaran.model.Proses;
 import com.tugasakhir.mongodbprosespembelajaran.repository.prosesRepository;
 import com.tugasakhir.mongodbprosespembelajaran.model.Member;
@@ -85,6 +86,14 @@ public class prosesService {
         }
 
         return prosesList;
+    }
+    public List<Proses> getProsesByIdGuru(int idGuru) {
+        return prosesRepository.findByidGuru(idGuru);
+    }
+    public List<Pdf> getPdfsByIdKelas(String idKelas) {
+        Proses proses = prosesRepository.findByIdKelas(idKelas)
+                .orElseThrow(() -> new RuntimeException(String.format("Cannot find Proses with ID %s", idKelas)));
+        return proses.getPdfs();
     }
 
 }

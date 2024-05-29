@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class DataMigrationService {
@@ -131,6 +132,28 @@ public class DataMigrationService {
             List<ProsesUpdater> prosesUpdaters = prosesUpdaterRepository.findAll();
             logger.info("Retrieved {} ProsesUpdater records.", prosesUpdaters.size());
 
+            // Retrieve all existing Proses
+            List<Proses> existingProsesList = prosesRepository.findAll();
+
+            // Create a set to store ids from ProsesUpdater
+            Set<String> prosesUpdaterIds = prosesUpdaters.stream()
+                    .map(ProsesUpdater::getIdKelas)
+                    .map(String::valueOf)
+                    .collect(Collectors.toSet());
+
+            // Iterate through existing Proses
+            for (Proses existingProses : existingProsesList) {
+                String existingIdKelas = existingProses.getIdKelas();
+
+                // Check if the idKelas of existing Proses exists in ProsesUpdater
+                if (!prosesUpdaterIds.contains(existingIdKelas)) {
+                    // Delete Proses that don't have a corresponding idKelas in ProsesUpdater
+                    prosesRepository.delete(existingProses);
+                    logger.info("Deleted Proses with idKelas: {}", existingIdKelas);
+                }
+            }
+
+            // Iterate through ProsesUpdater records
             for (ProsesUpdater updater : prosesUpdaters) {
                 // Convert idKelas from int to String
                 String idKelasString = String.valueOf(updater.getIdKelas());

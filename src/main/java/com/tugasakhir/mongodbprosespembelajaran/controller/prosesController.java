@@ -1,5 +1,6 @@
 package com.tugasakhir.mongodbprosespembelajaran.controller;
 
+import com.tugasakhir.mongodbprosespembelajaran.model.Pdf;
 import com.tugasakhir.mongodbprosespembelajaran.model.Proses;
 import lombok.RequiredArgsConstructor;
 import com.tugasakhir.mongodbprosespembelajaran.service.prosesService;
@@ -21,31 +22,31 @@ public class prosesController {
 
     private final prosesService ProsesService;
 
-    @PostMapping
-    public ResponseEntity addProses(@RequestBody Proses proses){
-        ProsesService.addProses(proses);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
-    @PutMapping
-    public ResponseEntity updateProses(@RequestBody Proses proses){
-        ProsesService.updateProses(proses);
-        return ResponseEntity.status(HttpStatus.OK).build();
-
-    }
-    @GetMapping
-    public ResponseEntity<List<Proses>> getAllProses(){
-
-        return ResponseEntity.ok(ProsesService.getAllProses());
-    }
-    @GetMapping("/{idKelas}")
-    public ResponseEntity getProsesIdKelas(@PathVariable String idKelas){
-        return ResponseEntity.ok(ProsesService.getProses(idKelas));
-    }
-    @DeleteMapping("/delete/{idKelas}")
-    public ResponseEntity deleteProses(@PathVariable String idKelas) {
-        ProsesService.deleteProses(idKelas);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
+//    @PostMapping
+//    public ResponseEntity addProses(@RequestBody Proses proses){
+//        ProsesService.addProses(proses);
+//        return ResponseEntity.status(HttpStatus.CREATED).build();
+//    }
+//    @PutMapping
+//    public ResponseEntity updateProses(@RequestBody Proses proses){
+//        ProsesService.updateProses(proses);
+//        return ResponseEntity.status(HttpStatus.OK).build();
+//
+//    }
+//    @GetMapping
+//    public ResponseEntity<List<Proses>> getAllProses(){
+//
+//        return ResponseEntity.ok(ProsesService.getAllProses());
+//    }
+//    @GetMapping("/{idKelas}")
+//    public ResponseEntity getProsesIdKelas(@PathVariable String idKelas){
+//        return ResponseEntity.ok(ProsesService.getProses(idKelas));
+//    }
+//    @DeleteMapping("/delete/{idKelas}")
+//    public ResponseEntity deleteProses(@PathVariable String idKelas) {
+//        ProsesService.deleteProses(idKelas);
+//        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+//    }
     @GetMapping("/nim/{nim}")
     public ResponseEntity<List<Proses>> getProsesByNim(@PathVariable int nim) {
         List<Proses> prosesList = ProsesService.getProsesByNim(nim);
@@ -54,4 +55,17 @@ public class prosesController {
         }
         return ResponseEntity.ok(prosesList);
     }
+    @GetMapping("/guru/{idGuru}")
+    public ResponseEntity<List<Proses>> getProsesByIdGuru(@PathVariable int idGuru) {
+        List<Proses> prosesList = ProsesService.getProsesByIdGuru(idGuru);
+        if (prosesList.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No proses found for idGuru " + idGuru);
+        }
+        return ResponseEntity.ok(prosesList);
+    }
+//    @GetMapping("/{idKelas}/pdfs")
+//    public ResponseEntity<List<Pdf>> getPdfsByIdKelas(@PathVariable String idKelas) {
+//        List<Pdf> pdfList = prosesService.getPdfsByIdKelas(idKelas);
+//        return ResponseEntity.ok(pdfList);
+//    }
 }

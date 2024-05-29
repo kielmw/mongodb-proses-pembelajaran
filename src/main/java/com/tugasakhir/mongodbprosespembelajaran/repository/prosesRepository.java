@@ -23,6 +23,7 @@ public interface prosesRepository extends MongoRepository <Proses, String> {
     List<Proses> findByIdKelasList(List<String> idKelasList);
     @Query("{'idPdf' : ?0}")
     Optional<Proses>findByIdPdf(String idKelas);
+    List<Proses> findByidGuru(int idGuru);
     Optional<Proses> findByItemPembelajaransIdPertemuan(String idPertemuan);
     @Query(value = "{ 'idKelas': ?0, 'pdfs.fileName': { $exists: true } }", fields = "{ 'pdfs.fileName' : 1 }")
     List<String> findAllFileNameOptions();
