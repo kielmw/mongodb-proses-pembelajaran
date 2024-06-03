@@ -1,7 +1,6 @@
 package com.tugasakhir.mongodbprosespembelajaran.service;
 
 import com.tugasakhir.mongodbprosespembelajaran.model.ItemPembelajaran;
-import com.tugasakhir.mongodbprosespembelajaran.model.Pdf;
 import com.tugasakhir.mongodbprosespembelajaran.model.Proses;
 import com.tugasakhir.mongodbprosespembelajaran.repository.prosesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +58,9 @@ public class ItemPembelajaranService {
             String fileName = pdfService.getFileName(idKelas, idPdf);
             existingItem.setIdPdf(idPdf);
             existingItem.setFileName(fileName);
+        } else {
+            existingItem.setIdPdf(null);
+            existingItem.setFileName(null);
         }
 
         // Save the updated Proses entity
@@ -73,34 +75,28 @@ public class ItemPembelajaranService {
                 .orElseThrow(() -> new IllegalArgumentException("Proses with idKelas " + idKelas + " not found"));
 
         // Remove the ItemPembelajaran with the given idPertemuan from the list
-        proses.getItemPembelajarans().removeIf(item -> item.getIdPertemuan().equals(idPertemuan));
+        proses.getItemPembelajarans().removeIf(item -> idPertemuan.equals(item.getIdPertemuan()));
 
         // Save the updated Proses entity
         prosesRepository.save(proses);
     }
+
     public ItemPembelajaran addItemPembelajaran(ItemPembelajaran itemPembelajaran, String idKelas) {
-        // Retrieve the Proses entity by idPembelajaran to get idKelas
-        String idPertemuan = itemPembelajaran.getIdPertemuan(); // Corrected variable name
-        itemPembelajaran.setIdPertemuan(idPertemuan);
+        // Retrieve the Proses entity by idKelas to ensure its existence
         Proses proses = prosesRepository.findByIdKelas(idKelas)
                 .orElseThrow(() -> new IllegalArgumentException("Proses with idKelas " + idKelas + " not found"));
 
         // Set idKelas to ItemPembelajaran
         itemPembelajaran.setIdKelas(idKelas);
 
-        String headingPertemuan = itemPembelajaran.getHeadingPertemuan(); // Corrected variable name
-        itemPembelajaran.setHeadingPertemuan(headingPertemuan);
-
-        String bodyPertemuan = itemPembelajaran.getBodyPertemuan(); // Corrected variable name
-        itemPembelajaran.setBodyPertemuan(bodyPertemuan);
-
-        String videoPertemuan = itemPembelajaran.getVideoPertemuan(); // Corrected variable name
-        itemPembelajaran.setVideoPertemuan(videoPertemuan);
-
-        // Set idPdf and fileName based on Pdf model data
-        String idPdf = itemPembelajaran.getIdPdf(); // Assuming you have a getter for idPdf
-        String fileName = pdfService.getFileName(idKelas, idPdf); // Call method on the autowired PdfService
-        itemPembelajaran.setFileName(fileName);
+        // If idPdf is provided, set the fileName based on Pdf model data
+        if (itemPembelajaran.getIdPdf() != null) {
+            String idPdf = itemPembelajaran.getIdPdf();
+            String fileName = pdfService.getFileName(idKelas, idPdf);
+            itemPembelajaran.setFileName(fileName);
+        } else {
+            itemPembelajaran.setFileName(null);
+        }
 
         // Get the existing list of ItemPembelajarans from the Proses entity
         List<ItemPembelajaran> itemPembelajarans = proses.getItemPembelajarans();
@@ -108,7 +104,7 @@ public class ItemPembelajaranService {
             itemPembelajarans = new ArrayList<>();
         }
 
-        // Append the new ItemPembelaaran to the list
+        // Append the new ItemPembelajarans to the list
         itemPembelajarans.add(itemPembelajaran);
 
         proses.setIdKelas(idKelas);

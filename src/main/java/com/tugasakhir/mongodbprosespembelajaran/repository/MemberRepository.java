@@ -11,4 +11,5 @@ import java.util.Optional;
 @Repository
 public interface MemberRepository extends MongoRepository<Member, Long> {
     Optional<Member> findByNim(int nim);
+    List<Member> findByIdKelas(Integer idKelas);
 }
