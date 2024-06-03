@@ -1,7 +1,7 @@
 package com.tugasakhir.mongodbprosespembelajaran.service;
 
-import com.tugasakhir.mongodbprosespembelajaran.model.Pdf;
 import com.tugasakhir.mongodbprosespembelajaran.model.Proses;
+import com.tugasakhir.mongodbprosespembelajaran.model.Pdf;
 import com.tugasakhir.mongodbprosespembelajaran.repository.prosesRepository;
 import com.tugasakhir.mongodbprosespembelajaran.model.Member;
 import com.tugasakhir.mongodbprosespembelajaran.repository.MemberRepository;
@@ -9,10 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -87,13 +85,16 @@ public class prosesService {
 
         return prosesList;
     }
+
     public List<Proses> getProsesByIdGuru(int idGuru) {
         return prosesRepository.findByidGuru(idGuru);
     }
+
     public List<Pdf> getPdfsByIdKelas(String idKelas) {
-        Proses proses = prosesRepository.findByIdKelas(idKelas)
+        Proses proses = prosesRepository.findByIdKelasList1(idKelas)
+                .stream()
+                .findFirst()
                 .orElseThrow(() -> new RuntimeException(String.format("Cannot find Proses with ID %s", idKelas)));
         return proses.getPdfs();
     }
-
 }

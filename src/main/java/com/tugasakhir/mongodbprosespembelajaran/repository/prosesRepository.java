@@ -1,5 +1,6 @@
 package com.tugasakhir.mongodbprosespembelajaran.repository;
 
+import com.tugasakhir.mongodbprosespembelajaran.model.Pdf;
 import com.tugasakhir.mongodbprosespembelajaran.model.Proses;
 import com.tugasakhir.mongodbprosespembelajaran.model.ItemPembelajaran;
 import org.springframework.data.domain.Example;
@@ -19,6 +20,8 @@ import java.util.function.Function;
 public interface prosesRepository extends MongoRepository <Proses, String> {
     @Query("{'idKelas' : ?0}")
     Optional<Proses>findByIdKelas(String idKelas);
+    @Query("{'idKelas' : ?0}")
+    List<Proses>findByIdKelasList1(String idKelas);
     @Query("{'idKelas' : { $in: ?0 }}")
     List<Proses> findByIdKelasList(List<String> idKelasList);
     @Query("{'idPdf' : ?0}")

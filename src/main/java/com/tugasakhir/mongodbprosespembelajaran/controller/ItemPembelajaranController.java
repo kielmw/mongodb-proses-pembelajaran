@@ -47,4 +47,16 @@ public class ItemPembelajaranController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+    @GetMapping("/get/{idKelas}/{idPertemuan}")
+    public ResponseEntity<ItemPembelajaran> getItemPembelajaranByIdPertemuan(@PathVariable String idKelas, @PathVariable String idPertemuan) {
+        ItemPembelajaran itemPembelajaran = itemPembelajaranService.getItemPembelajaranByIdPertemuan(idKelas, idPertemuan);
+        if (itemPembelajaran != null) {
+            return new ResponseEntity<>(itemPembelajaran, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+
 }

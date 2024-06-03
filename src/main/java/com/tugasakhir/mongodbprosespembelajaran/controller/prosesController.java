@@ -4,6 +4,7 @@ import com.tugasakhir.mongodbprosespembelajaran.model.Pdf;
 import com.tugasakhir.mongodbprosespembelajaran.model.Proses;
 import lombok.RequiredArgsConstructor;
 import com.tugasakhir.mongodbprosespembelajaran.service.prosesService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class prosesController {
 
+    @Autowired
     private final prosesService ProsesService;
 
 //    @PostMapping
@@ -38,10 +40,10 @@ public class prosesController {
 //
 //        return ResponseEntity.ok(ProsesService.getAllProses());
 //    }
-//    @GetMapping("/{idKelas}")
-//    public ResponseEntity getProsesIdKelas(@PathVariable String idKelas){
-//        return ResponseEntity.ok(ProsesService.getProses(idKelas));
-//    }
+    @GetMapping("/{idKelas}")
+    public ResponseEntity getProsesIdKelas(@PathVariable String idKelas){
+        return ResponseEntity.ok(ProsesService.getProses(idKelas));
+    }
 //    @DeleteMapping("/delete/{idKelas}")
 //    public ResponseEntity deleteProses(@PathVariable String idKelas) {
 //        ProsesService.deleteProses(idKelas);
@@ -63,9 +65,9 @@ public class prosesController {
         }
         return ResponseEntity.ok(prosesList);
     }
-//    @GetMapping("/{idKelas}/pdfs")
-//    public ResponseEntity<List<Pdf>> getPdfsByIdKelas(@PathVariable String idKelas) {
-//        List<Pdf> pdfList = prosesService.getPdfsByIdKelas(idKelas);
-//        return ResponseEntity.ok(pdfList);
-//    }
+    @GetMapping("/{idKelas}/pdfs")
+    public ResponseEntity<List<Pdf>> getPdfsByIdKelas(@PathVariable String idKelas) {
+        List<Pdf> pdfList = ProsesService.getPdfsByIdKelas(idKelas);
+        return ResponseEntity.ok(pdfList);
+    }
 }

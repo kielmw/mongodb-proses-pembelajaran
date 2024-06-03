@@ -119,4 +119,18 @@ public class ItemPembelajaranService {
         return itemPembelajaran;
     }
 
+    public ItemPembelajaran getItemPembelajaranByIdPertemuan(String idKelas, String idPertemuan) {
+        // Retrieve the Proses entity by idKelas to ensure its existence
+        Proses proses = prosesRepository.findByIdKelas(idKelas)
+                .orElseThrow(() -> new IllegalArgumentException("Proses with idKelas " + idKelas + " not found"));
+
+        // Find the ItemPembelajaran with the given idPertemuan
+        for (ItemPembelajaran item : proses.getItemPembelajarans()) {
+            if (item.getIdPertemuan().equals(idPertemuan)) {
+                return item;
+            }
+        }
+
+        return null; // If not found
+    }
 }
