@@ -54,9 +54,9 @@ public class PdfService {
             // Save the updated Proses entity
             prosesRepository.save(proses);
 
-            return "PDF saved successfully for class ID: " + idKelas;
+            return "File saved successfully for class ID: " + idKelas;
         } catch (IOException e) {
-            throw new IOException("Failed to save PDF: " + e.getMessage());
+            throw new IOException("Failed to save File: " + e.getMessage());
         }
     }
 

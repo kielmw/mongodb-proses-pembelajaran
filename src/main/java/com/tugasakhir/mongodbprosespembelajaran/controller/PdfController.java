@@ -36,9 +36,9 @@ public class PdfController {
     public ResponseEntity<String> uploadPdf(@RequestParam("file") MultipartFile file, @PathVariable String idKelas) {
         try {
             String response = pdfService.savePdf(file, idKelas);
-            return ResponseEntity.ok().body("PDF saved successfully for class ID: " + idKelas + " with PDF ID: " + response);
+            return ResponseEntity.ok().body("File saved successfully for class ID: " + idKelas + " with File ID: " + response);
         } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to save PDF: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to save File: " + e.getMessage());
         }
     }
     @GetMapping("/download/{idKelas}/{pdfId}")
